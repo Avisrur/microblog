@@ -2,6 +2,8 @@ package microblog.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import microblog.dto.PostRequest;
+import microblog.dto.PostUpdate;
+import microblog.exceptions.PostNotFound;
 import microblog.exceptions.UnknownQueryParam;
 import microblog.repositories.models.PostEntity;
 import microblog.services.PostsService;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 @RestController
 @Slf4j
@@ -28,13 +31,27 @@ public class PostsController {
     @PostMapping
     public ResponseEntity addPost(@RequestBody PostRequest postRequest) {
         log.info("Got request {}", postRequest);
-        postsService.savePost(postRequest.toPostEntity());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        PostEntity postEntity = postsService.savePost(postRequest.toPostEntity());
+        return ResponseEntity.status(HttpStatus.CREATED).body(postEntity);
     }
 
     @GetMapping
     public List<PostEntity> getPosts(@RequestParam Map<String, String> queryParams) {
+        log.info("About to retrieve posts by: {}", queryParams);
         return postsService.findBy(queryParams);
+    }
+
+    @PutMapping("/{postId}")
+    public ResponseEntity updatePost(@PathVariable String postId, @RequestBody PostUpdate postUpdate){
+        PostEntity updatedPostEntity = postsService.updatePost(postId, postUpdate);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updatedPostEntity);
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable String postId) {
+        postsService.deleteById(postId);
+        log.info("Post with id {} was deleted", postId);
+        return ResponseEntity.status(204).build();
     }
 
     //like
@@ -44,8 +61,8 @@ public class PostsController {
     //error handling
 
 
-    @ExceptionHandler(UnknownQueryParam.class)
-    public void handleUnknownQueryParams(RuntimeException e, HttpServletResponse response) throws IOException {
+    @ExceptionHandler({UnknownQueryParam.class, PostNotFound.class})
+    public void handleBadRequest(RuntimeException e, HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     }
 }

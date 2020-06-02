@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface PostsRepository extends MongoRepository<PostEntity, String> {
     List<PostEntity> findByUserId(String userId);
-    List<PostEntity> findByPostId(String postId);
+    PostEntity findByPostId(String postId);
+
+    int deleteByPostId(String postId);
 }
