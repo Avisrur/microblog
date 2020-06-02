@@ -15,7 +15,6 @@ public class TopTrendingPostsHandler {
     private TopTrendingComparator topTrendingComparator;
 
     public TopTrendingPostsHandler(TopTrendingComparator topTrendingComparator) {
-        log.info("YES");
         this.topTrendingComparator = topTrendingComparator;
     }
 

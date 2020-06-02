@@ -12,7 +12,6 @@ public class TopTrendingComparator implements Comparator<PostEntity> {
 
     private List<Comparator<PostEntity>> listComparators;
 
-
     public TopTrendingComparator(TopLikesComparator topLikesComparator, DateComparator dateComparator){
         this.listComparators = new ArrayList<Comparator<PostEntity>>() {
             {

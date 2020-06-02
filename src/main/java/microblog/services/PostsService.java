@@ -54,9 +54,7 @@ public class PostsService {
 
     public List<PostEntity> getTopTrendingPosts() {
         List<PostEntity> allPosts = postsRepository.findAll();
-//        log.info("BEFORE SORTING: {}",allPosts);
         topTrendingPostsHandler.sortByTopTrending(allPosts);
-//        log.info("AFTER SORTING: {}",allPosts);
         return allPosts;
     }
 
