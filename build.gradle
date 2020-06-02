@@ -9,6 +9,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'groovy'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -32,6 +33,12 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
     //mongo
-
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    // Groovy test
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.7'
+    testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.skyscreamer:jsonassert:1.4.0'
+    testCompile 'com.github.tomakehurst:wiremock-standalone:2.15.0'
+    testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-assertj', version: '2.0.0.RC1'
 }
