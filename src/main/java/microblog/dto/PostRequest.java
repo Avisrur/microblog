@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import microblog.repositories.models.PostEntity;
 
+import java.util.Date;
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,8 +17,14 @@ import microblog.repositories.models.PostEntity;
 public class PostRequest {
     String userId;
     String body;
-    public PostEntity toPostEntity(){
-        PostEntity.builder().build();
-        return PostEntity.builder().userId(this.userId).body(this.body).build();
+
+    public PostEntity toPostEntity() {
+        return PostEntity.builder()
+                .postId(UUID.randomUUID().toString())
+                .userId(this.userId)
+                .body(this.body)
+                .likes(0)
+                .createdDate(new Date())
+                .build();
     }
 }
