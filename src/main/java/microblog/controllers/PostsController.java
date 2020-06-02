@@ -36,13 +36,14 @@ public class PostsController {
     }
 
     @GetMapping
-    public List<PostEntity> getPosts(@RequestParam Map<String, String> queryParams) {
+    public ResponseEntity<List<PostEntity>> getPosts(@RequestParam Map<String, String> queryParams) {
         log.info("About to retrieve posts by: {}", queryParams);
-        return postsService.findBy(queryParams);
+        return ResponseEntity.status(HttpStatus.OK).body(postsService.findBy(queryParams));
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostEntity> updatePost(@PathVariable String postId, @RequestBody PostUpdate postUpdate){
+    public ResponseEntity<PostEntity> updatePost(@PathVariable String postId, @RequestBody PostUpdate postUpdate) {
+        log.info("About to update post: {} with new body: {}", postId, postUpdate);
         PostEntity updatedPostEntity = postsService.updatePost(postId, postUpdate);
         return ResponseEntity.status(HttpStatus.CREATED).body(updatedPostEntity);
     }
@@ -55,9 +56,15 @@ public class PostsController {
     }
 
     @PutMapping("/like/{postId}")
-    public ResponseEntity<PostEntity> likePost(@PathVariable String postId){
+    public ResponseEntity<PostEntity> likePost(@PathVariable String postId) {
         PostEntity updatedPostEntity = postsService.like(postId);
         return ResponseEntity.status(HttpStatus.CREATED).body(updatedPostEntity);
+    }
+
+    @GetMapping("/topTrending")
+    public List<PostEntity> topTrendingPosts() {
+        log.info("About to retrieve top trending posts");
+        return postsService.getTopTrendingPosts();
     }
 
     //like
