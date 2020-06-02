@@ -1,0 +1,14 @@
+version: "3"
+services:
+  mymongodb:
+    image: mongo:4.0.4
+    container_name: "mymongodb"
+    ports:
+      - 27017:27017
+    command: --smallfiles
+  app:
+    image: microblog:2.0
+    ports:
+      - 8080:8080
+    links:
+      - mymongodb
