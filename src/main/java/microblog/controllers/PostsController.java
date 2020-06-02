@@ -3,8 +3,9 @@ package microblog.controllers;
 import lombok.extern.slf4j.Slf4j;
 import microblog.dto.PostRequest;
 import microblog.dto.PostUpdate;
-import microblog.exceptions.PostNotFound;
-import microblog.exceptions.UnknownQueryParam;
+import microblog.exceptions.PostNotFoundException;
+import microblog.exceptions.UnknownQueryParamException;
+import microblog.exceptions.UpdateFailureException;
 import microblog.repositories.models.PostEntity;
 import microblog.services.PostsService;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 @RestController
 @Slf4j
@@ -42,7 +42,7 @@ public class PostsController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity updatePost(@PathVariable String postId, @RequestBody PostUpdate postUpdate){
+    public ResponseEntity<PostEntity> updatePost(@PathVariable String postId, @RequestBody PostUpdate postUpdate){
         PostEntity updatedPostEntity = postsService.updatePost(postId, postUpdate);
         return ResponseEntity.status(HttpStatus.CREATED).body(updatedPostEntity);
     }
@@ -54,6 +54,12 @@ public class PostsController {
         return ResponseEntity.status(204).build();
     }
 
+    @PutMapping("/like/{postId}")
+    public ResponseEntity<PostEntity> likePost(@PathVariable String postId){
+        PostEntity updatedPostEntity = postsService.like(postId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updatedPostEntity);
+    }
+
     //like
     //getTopTrendingPosts
     //update
@@ -61,8 +67,13 @@ public class PostsController {
     //error handling
 
 
-    @ExceptionHandler({UnknownQueryParam.class, PostNotFound.class})
+    @ExceptionHandler({UnknownQueryParamException.class, PostNotFoundException.class})
     public void handleBadRequest(RuntimeException e, HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(UpdateFailureException.class)
+    public void handleUnknownUpdateCriteria(RuntimeException e, HttpServletResponse response) throws IOException {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
     }
 }

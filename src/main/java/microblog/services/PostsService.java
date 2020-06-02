@@ -2,8 +2,9 @@ package microblog.services;
 
 import lombok.extern.slf4j.Slf4j;
 import microblog.dto.PostUpdate;
-import microblog.exceptions.PostNotFound;
-import microblog.exceptions.UnknownQueryParam;
+import microblog.exceptions.PostNotFoundException;
+import microblog.exceptions.UnknownQueryParamException;
+import microblog.exceptions.UpdateFailureException;
 import microblog.repositories.PostsRepository;
 import microblog.repositories.models.PostEntity;
 import org.springframework.stereotype.Service;
@@ -37,24 +38,52 @@ public class PostsService {
         if (queryParams.isEmpty()) {
             return postsRepository.findAll();
         }
-        throw new UnknownQueryParam(String.format("Unable to retrieve posts by these query params '%s'", queryParams));
+        throw new UnknownQueryParamException(String.format("Unable to retrieve posts by these query params '%s'", queryParams));
     }
 
-    public PostEntity updatePost(String postId, PostUpdate postUpdate) {
-        PostEntity postToUpdate = getPostByPostId(postId);
-        if (postToUpdate != null) {
-            postToUpdate.setBody(postUpdate.getBody());
-            return savePost(postToUpdate);
-        } else {
-            throw new PostNotFound(String.format("Unable to update post with post ID '%s' because it is not found", postId));
-        }
+    public PostEntity like(String postId) {
+        return updatePostBy("like",postId,null);
+    }
+
+    public PostEntity updatePost(String postId, PostUpdate newPost){
+        return updatePostBy("newText",postId,newPost);
     }
 
     public void deleteById(String postId) {
         if (this.postsRepository.deleteByPostId(postId) == 0) {
-            throw new PostNotFound(String.format("Unable to delete post with post ID '%s' because it is not found", postId));
+            throw new PostNotFoundException(String.format("Unable to delete post with post ID '%s' because it is not found", postId));
         }
     }
+
+    private PostEntity updatePostBy(String updateBy, String postId, PostUpdate newPost) {
+        PostEntity postToUpdate = getPostByPostId(postId);
+        if (postToUpdate != null) {
+            return handleUpdatePost(updateBy,postToUpdate,newPost);
+        } else {
+            throw new PostNotFoundException(String.format("Unable to update post with post ID '%s' because it is not found", postId));
+        }
+    }
+
+    private PostEntity handleUpdatePost(String updateBy, PostEntity postToUpdate, PostUpdate newPost) {
+        if(updateBy.equals("like")){
+            return updatePostLikes(postToUpdate);
+        }
+        if(updateBy.equals("newText")){
+            return updatePostWithNewText(postToUpdate, newPost);
+        }
+        throw new UpdateFailureException(String.format("Unable to update post because of unknown criteria '%s'", updateBy));
+    }
+
+    private PostEntity updatePostLikes(PostEntity postToUpdate) {
+        postToUpdate.setLikes(postToUpdate.getLikes() + 1);
+        return savePost(postToUpdate);
+    }
+
+    private PostEntity updatePostWithNewText(PostEntity postToUpdate, PostUpdate newPost) {
+        postToUpdate.setBody(newPost.getBody());
+        return savePost(postToUpdate);
+    }
+
 
     private PostEntity getPostByPostId(String postId) {
         return postsRepository.findByPostId(postId);
@@ -63,6 +92,7 @@ public class PostsService {
     private List<PostEntity> getPostsByUserId(String userId) {
         return postsRepository.findByUserId(userId);
     }
+
 
 
 }
