@@ -1,0 +1,15 @@
+spring:
+  data:
+    mongodb:
+      database: microblog
+      port: 27017
+      host: localhost
+
+sort-config:
+  topTrendingSortList:
+    -
+      property: likes
+      direction: desc
+    -
+      property: createdDate
+      direction: desc

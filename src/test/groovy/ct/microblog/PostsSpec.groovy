@@ -12,6 +12,7 @@ class PostsSpec extends Specification {
     @Shared
     AppDriver app = new AppDriver()
 
+
     def setupSpec() {
         app.start()
     }
@@ -19,6 +20,7 @@ class PostsSpec extends Specification {
     def cleanupSpec() {
         app.stop()
     }
+
 
 
 
