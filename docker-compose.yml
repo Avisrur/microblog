@@ -6,8 +6,8 @@ services:
     ports:
       - 27017:27017
     command: --smallfiles
-  app:
-    image: microblog:2.0
+  microblog:
+    image: nadavavis/microblog:2.0
     ports:
       - 8080:8080
     links:

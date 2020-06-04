@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.3.0.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.2.5.RELEASE")
     }
 }
 
@@ -33,7 +33,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
     //mongo
-    compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    compile 'org.springframework.boot:spring-boot-starter-data-mongodb:2.2.6.RELEASE'
     // Groovy test
     testCompile 'org.codehaus.groovy:groovy-all:2.4.7'
     testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
