@@ -6,14 +6,12 @@ import microblog.exceptions.PostNotFoundException;
 import microblog.exceptions.UnknownQueryParamException;
 import microblog.exceptions.UpdateFailureException;
 import microblog.handlers.TopTrendingPostsHandler;
-import microblog.handlers.sort.SortConfig;
 import microblog.repositories.PostsRepository;
 import microblog.repositories.models.PostEntity;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +23,7 @@ public class PostsService {
     private PostsRepository postsRepository;
     private TopTrendingPostsHandler topTrendingPostsHandler;
 
-    public PostsService(PostsRepository postsRepository, TopTrendingPostsHandler topTrendingPostsHandler, SortConfig sortConfig) {
-        log.info("sort configs: {}",sortConfig);
+    public PostsService(PostsRepository postsRepository, TopTrendingPostsHandler topTrendingPostsHandler) {
         this.postsRepository = postsRepository;
         this.topTrendingPostsHandler = topTrendingPostsHandler;
     }
