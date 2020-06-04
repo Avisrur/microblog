@@ -31,3 +31,9 @@ Returns: No content if deleted succesfully
 POST: /posts/like/{postId}
 
 Returns: The liked entity with updated likes
+
+---
+
+GET: /posts/topTrending
+
+Returns: List of all posts sorted by likes first and then date
