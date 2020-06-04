@@ -1,7 +1,6 @@
 package microblog.handlers;
 
 import lombok.extern.slf4j.Slf4j;
-import microblog.comparators.TopTrendingComparator;
 import microblog.handlers.sort.SortConfig;
 import microblog.handlers.sort.TopTrendingSort;
 import microblog.repositories.models.PostEntity;
