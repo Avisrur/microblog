@@ -46,12 +46,13 @@ public class PostsService {
         throw new UnknownQueryParamException(String.format("Unable to retrieve posts by these query params '%s'", queryParams));
     }
 
-    public PostEntity like(String postId) {
-        return updatePostBy("like", postId, null);
-    }
-
-    public PostEntity updatePost(String postId, PostUpdate newPost) {
-        return updatePostBy("newText", postId, newPost);
+    public PostEntity updatePostBy(String updateBy, String postId, PostUpdate newPost) {
+        PostEntity postToUpdate = getPostByPostId(postId);
+        if (postToUpdate != null) {
+            return handleUpdatePost(updateBy, postToUpdate, newPost);
+        } else {
+            throw new PostNotFoundException(String.format("Unable to update post with post ID '%s' because it is not found", postId));
+        }
     }
 
     public List<PostEntity> getTopTrendingPosts() {
@@ -62,15 +63,6 @@ public class PostsService {
     public void deleteById(String postId) {
         if (this.postsRepository.deleteByPostId(postId) == 0) {
             throw new PostNotFoundException(String.format("Unable to delete post with post ID '%s' because it is not found", postId));
-        }
-    }
-
-    private PostEntity updatePostBy(String updateBy, String postId, PostUpdate newPost) {
-        PostEntity postToUpdate = getPostByPostId(postId);
-        if (postToUpdate != null) {
-            return handleUpdatePost(updateBy, postToUpdate, newPost);
-        } else {
-            throw new PostNotFoundException(String.format("Unable to update post with post ID '%s' because it is not found", postId));
         }
     }
 

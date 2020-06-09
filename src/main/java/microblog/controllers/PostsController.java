@@ -44,7 +44,7 @@ public class PostsController {
     @PutMapping("/{postId}")
     public ResponseEntity<PostEntity> updatePost(@PathVariable String postId, @RequestBody PostUpdate postUpdate) {
         log.info("About to update post: {} with new body: {}", postId, postUpdate);
-        PostEntity updatedPostEntity = postsService.updatePost(postId, postUpdate);
+        PostEntity updatedPostEntity = postsService.updatePostBy("newText",postId, postUpdate);
         return ResponseEntity.status(HttpStatus.CREATED).body(updatedPostEntity);
     }
 
@@ -57,7 +57,7 @@ public class PostsController {
 
     @PutMapping("/like/{postId}")
     public ResponseEntity<PostEntity> likePost(@PathVariable String postId) {
-        PostEntity updatedPostEntity = postsService.like(postId);
+        PostEntity updatedPostEntity = postsService.updatePostBy("like",postId,null);
         return ResponseEntity.status(HttpStatus.CREATED).body(updatedPostEntity);
     }
 
@@ -67,19 +67,14 @@ public class PostsController {
         return postsService.getTopTrendingPosts();
     }
 
-    //like
-    //getTopTrendingPosts
-    //update
-    //delete
-    //error handling
 
 
-    @ExceptionHandler({UnknownQueryParamException.class, PostNotFoundException.class})
+    @ExceptionHandler({UnknownQueryParamException.class})
     public void handleBadRequest(RuntimeException e, HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     }
 
-    @ExceptionHandler(UpdateFailureException.class)
+    @ExceptionHandler({UpdateFailureException.class, PostNotFoundException.class})
     public void handleUnknownUpdateCriteria(RuntimeException e, HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
     }
