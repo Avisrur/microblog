@@ -7,7 +7,7 @@ services:
       - 27017:27017
     command: --smallfiles
   microblog:
-    image: nadavavis/microblog:4.0
+    image: nadavavis/microblog:last
     ports:
       - 8080:8080
     links:
