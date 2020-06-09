@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TimeNormalizer extends Normalizer {
-    public TimeNormalizer(@Value("${time.max}") long max,
-                          @Value("${time.min}") long min,
-                          @Value("${time.weight}") int weight) {
+    public TimeNormalizer(@Value("${trending-formula.time.max}") long max,
+                          @Value("${trending-formula.time.min}") long min,
+                          @Value("${trending-formula.time.weight}") int weight) {
         this.max = max;
         this.min = min;
         this.weight = weight;

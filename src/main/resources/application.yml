@@ -3,9 +3,9 @@ spring:
     mongodb:
       database: microblog
       port: 27017
-      host: mymongodb
+      host: localhost
 
-trending-formula-consts:
+trending-formula:
   time:
     max: 0
     min: 172800000

@@ -11,7 +11,9 @@ public class TopTrendingScoreCalculator {
     private LikesNormalizer likesNormalizer;
     private TimeNormalizer timeNormalizer;
 
-    public TopTrendingScoreCalculator(@Value("${time.min}")long timeWindowLimit, LikesNormalizer likesNormalizer, TimeNormalizer timeNormalizer) {
+    public TopTrendingScoreCalculator(@Value("${trending-formula.time.min}")long timeWindowLimit,
+                                      LikesNormalizer likesNormalizer,
+                                      TimeNormalizer timeNormalizer) {
         this.timeWindowLimit = timeWindowLimit;
         this.likesNormalizer = likesNormalizer;
         this.timeNormalizer = timeNormalizer;
