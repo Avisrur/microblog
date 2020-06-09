@@ -1,39 +1,46 @@
 package microblog.handlers;
 
-import lombok.extern.slf4j.Slf4j;
-import microblog.handlers.sort.SortConfig;
-import microblog.handlers.sort.TopTrendingSort;
+import microblog.handlers.score.TopTrendingScoreCalculator;
 import microblog.repositories.models.PostEntity;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class TopTrendingPostsHandler {
 
-    private SortConfig sortConfig;
+    private TopTrendingScoreCalculator topTrendingScoreCalculator;
 
-    public TopTrendingPostsHandler(SortConfig sortConfig) {
-        this.sortConfig = sortConfig;
-
+    public TopTrendingPostsHandler(TopTrendingScoreCalculator topTrendingScoreCalculator) {
+        this.topTrendingScoreCalculator = topTrendingScoreCalculator;
     }
 
-    public List<Order> createSortByConfig() {
-        return sortConfig.getTopTrendingSortList().stream()
-                .map(this::buildOrder)
+    public List<PostEntity> calculateTopTrending(List<PostEntity> allPosts) {
+        long curDateInMillis = new Date().getTime();
+        return allPosts.stream()
+                .map(post -> calculateTrendingScoreForPost(curDateInMillis, post))
+                .sorted(sortByTrendingScore())
                 .collect(Collectors.toList());
     }
 
-    private Order buildOrder(TopTrendingSort sortConfig) {
-        return new Order(getSortingDirection(sortConfig.getDirection()), sortConfig.getProperty());
+    private PostEntity calculateTrendingScoreForPost(long curDateInMillis, PostEntity post) {
+        post.setTrendingScore(getScore(curDateInMillis, post));
+        return post;
     }
 
-    private Sort.Direction getSortingDirection(String direction) {
-        return "asc".equals(direction.toLowerCase()) ? Sort.Direction.ASC : Sort.Direction.DESC;
+    private Comparator<PostEntity> sortByTrendingScore() {
+        return Comparator.comparingDouble(PostEntity::getTrendingScore).reversed();
+    }
+
+    private double getScore(long curDateInMillis, PostEntity post) {
+        long postTimeWindow = calculateTimeWindow(curDateInMillis, post.getCreatedDate().getTime());
+        return topTrendingScoreCalculator.calculateScoreFrom(postTimeWindow, post.getLikes());
+    }
+
+    private long calculateTimeWindow(long curDateInMillis, long postDateInMillis) {
+        return curDateInMillis - postDateInMillis;
     }
 }
