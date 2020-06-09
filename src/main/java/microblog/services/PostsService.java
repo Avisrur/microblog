@@ -8,8 +8,6 @@ import microblog.exceptions.UpdateFailureException;
 import microblog.handlers.TopTrendingPostsHandler;
 import microblog.repositories.PostsRepository;
 import microblog.repositories.models.PostEntity;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -21,6 +19,7 @@ import java.util.Map;
 public class PostsService {
 
     private PostsRepository postsRepository;
+//    private OldAndStupidTopTrendingPostsHandler topTrendingPostsHandler;
     private TopTrendingPostsHandler topTrendingPostsHandler;
 
     public PostsService(PostsRepository postsRepository, TopTrendingPostsHandler topTrendingPostsHandler) {
@@ -56,8 +55,8 @@ public class PostsService {
     }
 
     public List<PostEntity> getTopTrendingPosts() {
-        List<Order> orders = topTrendingPostsHandler.createSortByConfig();
-        return postsRepository.findAll(Sort.by(orders));
+        List<PostEntity> allPosts = postsRepository.findAll();
+        return topTrendingPostsHandler.calculateTopTrending(allPosts);
     }
 
     public void deleteById(String postId) {

@@ -5,11 +5,12 @@ spring:
       port: 27017
       host: mymongodb
 
-sort-config:
-  topTrendingSortList:
-    -
-      property: likes
-      direction: desc
-    -
-      property: createdDate
-      direction: desc
+trending-formula-consts:
+  time:
+    max: 0
+    min: 172800000
+    weight: 5
+  likes:
+    max: 500
+    min: 0
+    weight: 15

@@ -3,6 +3,7 @@ package microblog.repositories.models;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -23,4 +24,6 @@ public class PostEntity {
     private Integer likes;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createdDate;
+    @Transient
+    private double trendingScore;
 }
