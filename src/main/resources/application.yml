@@ -3,14 +3,14 @@ spring:
     mongodb:
       database: microblog
       port: 27017
-      host: localhost
+      host: mymongodb
 
 trending-formula:
   time:
     max: 0
     min: 172800000
-    weight: 5
+    weight: 3
   likes:
     max: 500
     min: 0
-    weight: 15
+    weight: 7

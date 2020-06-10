@@ -25,8 +25,9 @@ public class TopTrendingScoreCalculator {
         return calculateTrendingScore(postTimeWindow,likes);
     }
 
+    //score between 0-100 for trending score
     private double calculateTrendingScore(long postTimeWindow, Integer likes) {
-        return (likesNormalizer.calculate(likes) + timeNormalizer.calculate(postTimeWindow)) * 10 / 2;
+        return (likesNormalizer.calculate(likes) + timeNormalizer.calculate(postTimeWindow)) * 10;
     }
 
     private double calculateTrendingScoreWithoutTime(Integer likes) {
