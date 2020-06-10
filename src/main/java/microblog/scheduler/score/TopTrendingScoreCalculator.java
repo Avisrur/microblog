@@ -31,7 +31,7 @@ public class TopTrendingScoreCalculator {
     }
 
     private double calculateTrendingScoreWithoutTime(Integer likes) {
-        return likesNormalizer.calculate(likes) * 10 / 2;
+        return likesNormalizer.calculate(likes) * 10;
     }
 
 
