@@ -1,4 +1,4 @@
-package microblog.handlers.score.normalizers;
+package microblog.scheduler.score.normalizers;
 
 import org.springframework.stereotype.Component;
 

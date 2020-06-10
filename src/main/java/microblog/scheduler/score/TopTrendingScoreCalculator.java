@@ -1,7 +1,7 @@
-package microblog.handlers.score;
+package microblog.scheduler.score;
 
-import microblog.handlers.score.normalizers.LikesNormalizer;
-import microblog.handlers.score.normalizers.TimeNormalizer;
+import microblog.scheduler.score.normalizers.LikesNormalizer;
+import microblog.scheduler.score.normalizers.TimeNormalizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

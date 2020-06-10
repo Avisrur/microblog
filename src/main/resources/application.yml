@@ -3,7 +3,7 @@ spring:
     mongodb:
       database: microblog
       port: 27017
-      host: mymongodb
+      host: localhost
 
 trending-formula:
   time:

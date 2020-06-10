@@ -24,6 +24,5 @@ public class PostEntity {
     private Integer likes;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createdDate;
-    @Transient
     private double trendingScore;
 }

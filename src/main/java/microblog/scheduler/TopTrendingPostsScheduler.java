@@ -1,7 +1,9 @@
-package microblog.handlers;
+package microblog.scheduler;
 
-import microblog.handlers.score.TopTrendingScoreCalculator;
+import microblog.repositories.PostsRepository;
+import microblog.scheduler.score.TopTrendingScoreCalculator;
 import microblog.repositories.models.PostEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -10,20 +12,37 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class TopTrendingPostsHandler {
+public class TopTrendingPostsScheduler {
 
     private TopTrendingScoreCalculator topTrendingScoreCalculator;
+    private PostsRepository postsRepository;
 
-    public TopTrendingPostsHandler(TopTrendingScoreCalculator topTrendingScoreCalculator) {
+    public TopTrendingPostsScheduler(TopTrendingScoreCalculator topTrendingScoreCalculator, PostsRepository postsRepository) {
         this.topTrendingScoreCalculator = topTrendingScoreCalculator;
+        this.postsRepository = postsRepository;
     }
 
-    public List<PostEntity> calculateTopTrending(List<PostEntity> allPosts) {
+    @Scheduled(fixedDelay = 120000)
+    public void calculateTopTrending() {
+        List<PostEntity> allPosts = getAllPosts();
         long curDateInMillis = new Date().getTime();
+        List<PostEntity> updatedPosts = getUpdatedPostsWithTrendingScore(allPosts, curDateInMillis);
+        saveUpdatedPostsWithTrendingScore(updatedPosts);
+    }
+
+    private List<PostEntity> getUpdatedPostsWithTrendingScore(List<PostEntity> allPosts, long curDateInMillis) {
         return allPosts.stream()
                 .map(post -> calculateTrendingScoreForPost(curDateInMillis, post))
                 .sorted(sortByTrendingScore())
                 .collect(Collectors.toList());
+    }
+
+    private void saveUpdatedPostsWithTrendingScore(List<PostEntity> updatedPosts) {
+        postsRepository.saveAll(updatedPosts);
+    }
+
+    private List<PostEntity> getAllPosts() {
+        return postsRepository.findAll();
     }
 
     private PostEntity calculateTrendingScoreForPost(long curDateInMillis, PostEntity post) {

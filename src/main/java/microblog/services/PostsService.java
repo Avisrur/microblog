@@ -5,9 +5,10 @@ import microblog.dto.PostUpdate;
 import microblog.exceptions.PostNotFoundException;
 import microblog.exceptions.UnknownQueryParamException;
 import microblog.exceptions.UpdateFailureException;
-import microblog.handlers.TopTrendingPostsHandler;
 import microblog.repositories.PostsRepository;
 import microblog.repositories.models.PostEntity;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -20,11 +21,10 @@ public class PostsService {
 
     private PostsRepository postsRepository;
 //    private OldAndStupidTopTrendingPostsHandler topTrendingPostsHandler;
-    private TopTrendingPostsHandler topTrendingPostsHandler;
+//    private TopTrendingPostsScheduler topTrendingPostsHandler;
 
-    public PostsService(PostsRepository postsRepository, TopTrendingPostsHandler topTrendingPostsHandler) {
+    public PostsService(PostsRepository postsRepository) {
         this.postsRepository = postsRepository;
-        this.topTrendingPostsHandler = topTrendingPostsHandler;
     }
 
     public PostEntity savePost(PostEntity postEntity) {
@@ -55,9 +55,9 @@ public class PostsService {
     }
 
     public List<PostEntity> getTopTrendingPosts() {
-        List<PostEntity> allPosts = postsRepository.findAll();
-        return topTrendingPostsHandler.calculateTopTrending(allPosts);
+        return postsRepository.findAll(Sort.by(buildOrder()));
     }
+
 
     public void deleteById(String postId) {
         if (this.postsRepository.deleteByPostId(postId) == 0) {
@@ -91,5 +91,9 @@ public class PostsService {
 
     private List<PostEntity> getPostsByUserId(String userId) {
         return postsRepository.findByUserId(userId);
+    }
+
+    private Order buildOrder() {
+        return new Order(Sort.Direction.DESC,"trendingScore");
     }
 }
